@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import clsx from 'clsx';
-import {BrowserRouter as Router, NavLink} from 'react-router-dom';
+import {BrowserRouter as Router, Link} from 'react-router-dom';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -21,7 +21,9 @@ import MoneyIcon from '@material-ui/icons/Money';
 import PeopleIcon from '@material-ui/icons/People';
 import NoteIcon from '@material-ui/icons/Note';
 import NotesIcon from '@material-ui/icons/Notes';
+import ErrorIcon from '@material-ui/icons/Error';
 import Routers from '../router/Router';
+import AppContext from '../components/AppContext';
 
 const drawerWidth = 240;
 
@@ -102,9 +104,11 @@ export default function Layout(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
-    const [selectedVal, setSelectedVal] = React.useState(props.location.pathname.replace("/", ""));
-    const handleListItemClick = (event, val) => {
-        setSelectedVal(val);
+
+    const myContext = useContext(AppContext);
+
+    const handleNavLinkClick = (event, val) => {
+        myContext.setSelectedTab(val);
     };
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -150,60 +154,61 @@ export default function Layout(props) {
                     <Toolbar/>
                     <div className={classes.drawerContainerLeft}>
                         <List component="nav" style={{paddingTop: 0}}>
-                            <NavLink className={classes.drawerItem} activeClassName="is-active" to="/">
-                                <ListItem className={classes.drawerItem} selected={selectedVal === ''}
-                                          onClick={(event) => handleListItemClick(event, '')}>
+                            <Link className={classes.drawerItem} to="/">
+                                <ListItem className={classes.drawerItem} selected={myContext.selected_tab === ''}
+                                          onClick={(event) => handleNavLinkClick(event, '')}>
                                     <ListItemIcon>
                                         <ListIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary="Personal Details"/>
                                 </ListItem>
-                            </NavLink>
-                            <NavLink className={classes.drawerItem} activeClassName="is-active" to="/property_details">
-                                <ListItem selected={selectedVal === 'property_details'}
-                                          onClick={(event) => handleListItemClick(event, 'property_details')}>
+                            </Link>
+                            <Link className={classes.drawerItem} to="/property_details">
+                                <ListItem selected={myContext.selected_tab === 'property_details'}
+                                          onClick={(event) => handleNavLinkClick(event, 'property_details')}>
                                     <ListItemIcon>
                                         <HouseIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary="Property Details"/>
+                                    {myContext.is_error ? (<ErrorIcon style={{color: 'red'}} / >):null}
                                 </ListItem>
-                            </NavLink>
-                            <NavLink className={classes.drawerItem} activeClassName="is-active" to="/financial_details">
-                                <ListItem selected={selectedVal === 'financial_details'}
-                                          onClick={(event) => handleListItemClick(event, 'financial_details')}>
+                            </Link>
+                            <Link className={classes.drawerItem} to="/financial_details">
+                                <ListItem selected={myContext.selected_tab === 'financial_details'}
+                                          onClick={(event) => handleNavLinkClick(event, 'financial_details')}>
                                     <ListItemIcon>
                                         <MoneyIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary="Financial Details"/>
                                 </ListItem>
-                            </NavLink>
-                            <NavLink className={classes.drawerItem} activeClassName="is-active" to="/demographics">
-                                <ListItem selected={selectedVal === 'demographics'}
-                                          onClick={(event) => handleListItemClick(event, 'demographics')}>
+                            </Link>
+                            <Link className={classes.drawerItem} to="/demographics">
+                                <ListItem selected={myContext.selected_tab === 'demographics'}
+                                          onClick={(event) => handleNavLinkClick(event, 'demographics')}>
                                     <ListItemIcon>
                                         <PeopleIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary="Demographics"/>
                                 </ListItem>
-                            </NavLink>
-                            <NavLink className={classes.drawerItem} activeClassName="is-active" to="/declarations">
-                                <ListItem selected={selectedVal === 'declarations'}
-                                          onClick={(event) => handleListItemClick(event, 'declarations')}>
+                            </Link>
+                            <Link className={classes.drawerItem} to="/declarations">
+                                <ListItem selected={myContext.selected_tab === 'declarations'}
+                                          onClick={(event) => handleNavLinkClick(event, 'declarations')}>
                                     <ListItemIcon>
                                         <NoteIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary="Declarations"/>
                                 </ListItem>
-                            </NavLink>
-                            <NavLink className={classes.drawerItem} activeClassName="is-active" to="/summary">
-                                <ListItem selected={selectedVal === 'summary'}
-                                          onClick={(event) => handleListItemClick(event, 'summary')}>
+                            </Link>
+                            <Link className={classes.drawerItem} to="/summary">
+                                <ListItem selected={myContext.selected_tab === 'summary'}
+                                          onClick={(event) => handleNavLinkClick(event, 'summary')}>
                                     <ListItemIcon>
                                         <NotesIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary="Summary"/>
                                 </ListItem>
-                            </NavLink>
+                            </Link>
                         </List>
                     </div>
                 </Drawer>
